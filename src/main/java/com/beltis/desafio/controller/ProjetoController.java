@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.beltis.desafio.model.ProjetoModel;
 import com.beltis.desafio.service.intf.ProjetoService;
@@ -27,13 +28,7 @@ public class ProjetoController {
 	@Autowired
 	private ProjetoService projetoService;
 
-	@GetMapping("/teste")
-	public ResponseEntity<String> teste() {
-		return ResponseEntity.ok("Ok");
-
-	}
-
-	@GetMapping()
+	@GetMapping
 	public ResponseEntity<List<ProjetoModel>> getAllProjetos() throws EntityNotFoundException, Exception {
 
 		List<ProjetoModel> projetos = projetoService.findAll();

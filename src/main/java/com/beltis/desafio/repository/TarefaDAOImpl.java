@@ -51,11 +51,16 @@ public class TarefaDAOImpl implements TarefaDAO {
 
 	@Override
 	public void update(TarefaModel tarefa) {
-		Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        session.update(tarefa);
-        transaction.commit();
-        session.close();
+		try {
+			Session session = sessionFactory.openSession();
+	        Transaction transaction = session.beginTransaction();
+	        session.update(tarefa);
+	        transaction.commit();
+	        session.close();
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		}
 		
 	}
 
