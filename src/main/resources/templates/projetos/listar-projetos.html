@@ -2,76 +2,156 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
+	<meta charset="UTF-8" />
 	<title>Listar Projetos</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 	<script src="/js/projetos/remover-projetos.js" defer></script>
+	<script src="/js/projetos/validar-cadastro-projetos.js" defer></script>
 	<script type="text/javascript">
-		function toggleFormulario() {
-			const formulario = document.getElementById('formulario-cadastro');
-			if (formulario.classList.contains('d-none')) {
-				formulario.classList.remove('d-none');
+		function toggleFormularioCadastro() {
+			const formularioCadastro = document.getElementById("formulario-cadastro");
+			const tabelaListagemProjetos = document.getElementById("tabela-listagem-projetos");
+			const botaoCadastrarProjeto = document.getElementById("div-cadastrar-projeto");
+			const tituloListaProjetos = document.getElementById("titulo-lista-projetos");
+			
+			if (formularioCadastro.classList.contains("d-none")) {
+				formularioCadastro.classList.remove("d-none");
+				tabelaListagemProjetos.classList.add("d-none");
+				botaoCadastrarProjeto.classList.add("d-none");
+				tituloListaProjetos.classList.add("d-none");
+				
 			} else {
-				formulario.classList.add('d-none');
+				formularioCadastro.classList.add("d-none");
+				tabelaListagemProjetos.classList.remove("d-none");
+				botaoCadastrarProjeto.classList.remove("d-none");
+				tituloListaProjetos.classList.remove("d-none");
 			}
 		}
+
+		function toggleFormularioAlteracao(botaoAlterar = null) {
+			const formularioAlteracao = document.getElementById("formulario-alteracao");
+			const tabelaProjetos = document.getElementById("tabela-listagem-projetos");
+			const botaoCadastrarProjeto = document.getElementById("div-cadastrar-projeto");
+			const tituloListaProjetos = document.getElementById("titulo-lista-projetos");
+			
+			if (botaoAlterar === null) {
+				console.log("botão nulo");
+				formularioAlteracao.classList.add("d-none");
+				tabelaProjetos.classList.remove("d-none");
+				botaoCadastrarProjeto.classList.remove("d-none");
+				tituloListaProjetos.classList.remove("d-none");
+			} else {
+				formularioAlteracao.classList.remove("d-none");
+				tabelaProjetos.classList.add("d-none");
+				botaoCadastrarProjeto.classList.add("d-none");
+				tituloListaProjetos.classList.add("d-none");
+			    
+				document.getElementById("alteracao-id").value = button.getAttribute('data-id');;
+				document.getElementById("alteracao-titulo").value = button.getAttribute('data-titulo');
+				document.getElementById("alteracao-descricao").value = button.getAttribute('data-descricao');
+				document.getElementById("alteracao-dataInicio").value = button.getAttribute('data-dataInicio');
+			}
+		}
+
+
 	</script>
 </head>
 
 <body>
 	<div class="container">
-		<h1 class="mt-5">Lista de Projetos</h1>
+		<h1 id="titulo-lista-projetos" class="mt-5">Lista de Projetos</h1>
 
 		<div th:if="${mensagem}" class="alert alert-info mt-4" role="alert">
 			<span th:text="${mensagem}"></span>
 		</div>
 
 		<div class="mt-4 mb-4">
-			<button class="btn btn-primary" onclick="toggleFormulario()">Cadastrar Projeto</button>
+			<button id="div-cadastrar-projeto" class="btn btn-primary" onclick="toggleFormularioCadastro()">
+				Cadastrar Projeto
+			</button>
 		</div>
 
+		<!-- FORMULARIO_CADASTRO -->
 		<div id="formulario-cadastro" class="d-none">
 			<h2>Cadastrar Novo Projeto</h2>
-			<form th:action="@{/web/projetos}" th:object="${projeto}" method="post" id="form-cadastro-projeto"
-				enctype="application/x-www-form-urlencoded;charset=UTF-8">
+			<form id="form-cadastro-projeto" th:action="@{/web/projetos}" method="post"
+				onsubmit="return validarFormularioCadastro()">
 				<div class="form-group">
 					<label for="titulo">Título:</label>
-					<input type="text" id="titulo" th:field="*{titulo}" class="form-control" />
+					<input type="text" id="cadastro-titulo" name="titulo" class="form-control" />
+					<div id="cadastro-titulo-error" class="text-danger d-none"></div>
 				</div>
 				<div class="form-group">
 					<label for="descricao">Descrição:</label>
-					<input type="text" id="descricao" th:field="*{descricao}" class="form-control" />
+					<input type="text" id="cadastro-descricao" name="descricao" class="form-control" />
+					<div id="cadastro-descricao-error" class="text-danger d-none"></div>
 				</div>
 				<div class="form-group">
 					<label for="dataInicio">Data de Início:</label>
-					<input type="date" id="dataInicio" th:field="*{dataInicio}" class="form-control" />
+					<input type="date" id="cadastro-dataInicio" name="dataInicio" class="form-control" />
+					<div id="cadastro-dataInicio-error" class="text-danger d-none"></div>
 				</div>
 				<button type="submit" class="btn btn-primary">Salvar</button>
-				<button type="button" class="btn btn-secondary" onclick="toggleFormulario()">Cancelar</button>
+				<button type="button" class="btn btn-secondary" onclick="toggleFormularioCadastro()">
+					Cancelar
+				</button>
 			</form>
 		</div>
 
-		<table class="table table-striped mt-4">
+		<!-- FORMULARIO_ALTERACAO -->
+		<div id="formulario-alteracao" class="d-none">
+			<h2>Alterar Projeto</h2>
+			<form id="form-alteracao-projeto" th:action="@{/web/projetos}" method="post"
+				onsubmit="return validarFormularioAlteracao()">
+				<input type="hidden" id="alteracao-id" name="id" />
+				<div class="form-group">
+					<label for="titulo">Título:</label>
+					<input type="text" id="alteracao-titulo" name="titulo" class="form-control" />
+					<div id="alteracao-titulo-error" class="text-danger d-none"></div>
+				</div>
+				<div class="form-group">
+					<label for="descricao">Descrição:</label>
+					<input type="text" id="alteracao-descricao" name="descricao" class="form-control" />
+					<div id="alteracao-descricao-error" class="text-danger d-none"></div>
+				</div>
+				<div class="form-group">
+					<label for="dataInicio">Data de Início:</label>
+					<input type="date" id="alteracao-dataInicio" name="dataInicio" class="form-control" />
+					<div id="alteracao-dataInicio-error" class="text-danger d-none"></div>
+				</div>
+				<button type="submit" class="btn btn-primary" >Salvar Alterações</button>
+				<button type="button" class="btn btn-secondary" th:onclick="toggleFormularioAlteracao()">Cancelar</button>
+			</form>
+		</div>
+
+
+		<table id="tabela-listagem-projetos" class="table table-striped mt-4">
 			<thead>
 				<tr>
 					<th>ID</th>
 					<th>Título</th>
 					<th>Descrição</th>
 					<th>Data de Início</th>
-					<th>Ações</th>
+					<th class="text-center" colspan="2">Ações</th>
 				</tr>
 			</thead>
+
 			<tbody>
 				<tr th:each="projeto : ${projetos}">
 					<td th:text="${projeto.idProjeto}"></td>
 					<td th:text="${projeto.titulo}"></td>
 					<td th:text="${projeto.descricao}"></td>
 					<td th:text="${projeto.dataInicio}"></td>
-					<td>
-						<button type="button" class="btn btn-danger"
-							th:onclick="'confirmarDelecaoProjeto(' + ${projeto.idProjeto} + ')'">
-							Deletar
-						</button>
+					<td class="text-center">
+						<div class="d-flex justify-content-center">
+							<button type="button" class="btn btn-primary mx-2" th:data-id="${projeto.idProjeto}"
+								th:data-titulo="${projeto.titulo}" th:data-descricao="${projeto.descricao}"
+								th:data-dataInicio="${projeto.dataInicio}" onclick="toggleFormularioAlteracao(this)">Alterar</button>
+							<button type="button" class="btn btn-danger mx-2"
+								th:onclick="'confirmarDelecaoProjeto(' + ${projeto.idProjeto} + ')'">
+								Deletar
+							</button>
+						</div>
 					</td>
 				</tr>
 			</tbody>
