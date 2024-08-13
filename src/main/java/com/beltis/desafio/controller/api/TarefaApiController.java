@@ -1,4 +1,4 @@
-package com.beltis.desafio.controller;
+package com.beltis.desafio.controller.api;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +23,7 @@ import jakarta.persistence.EntityNotFoundException;
 @RestController
 @RequestMapping("/api/tarefas")
 @Validated
-public class TarefaController {
+public class TarefaApiController {
 	@Autowired
     private TarefaService tarefaService;
 	

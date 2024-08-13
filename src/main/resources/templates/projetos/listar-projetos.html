@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Listar Projetos</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="/js/projetos/remover-projetos.js" defer></script>
+	<script type="text/javascript">
+		function toggleFormulario() {
+			const formulario = document.getElementById('formulario-cadastro');
+			if (formulario.classList.contains('d-none')) {
+				formulario.classList.remove('d-none');
+			} else {
+				formulario.classList.add('d-none');
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<div class="container">
+		<h1 class="mt-5">Lista de Projetos</h1>
+
+		<div th:if="${mensagem}" class="alert alert-info mt-4" role="alert">
+			<span th:text="${mensagem}"></span>
+		</div>
+
+		<div class="mt-4 mb-4">
+			<button class="btn btn-primary" onclick="toggleFormulario()">Cadastrar Projeto</button>
+		</div>
+
+		<div id="formulario-cadastro" class="d-none">
+			<h2>Cadastrar Novo Projeto</h2>
+			<form th:action="@{/web/projetos}" th:object="${projeto}" method="post" id="form-cadastro-projeto"
+				enctype="application/x-www-form-urlencoded;charset=UTF-8">
+				<div class="form-group">
+					<label for="titulo">Título:</label>
+					<input type="text" id="titulo" th:field="*{titulo}" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label for="descricao">Descrição:</label>
+					<input type="text" id="descricao" th:field="*{descricao}" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label for="dataInicio">Data de Início:</label>
+					<input type="date" id="dataInicio" th:field="*{dataInicio}" class="form-control" />
+				</div>
+				<button type="submit" class="btn btn-primary">Salvar</button>
+				<button type="button" class="btn btn-secondary" onclick="toggleFormulario()">Cancelar</button>
+			</form>
+		</div>
+
+		<table class="table table-striped mt-4">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Título</th>
+					<th>Descrição</th>
+					<th>Data de Início</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="projeto : ${projetos}">
+					<td th:text="${projeto.idProjeto}"></td>
+					<td th:text="${projeto.titulo}"></td>
+					<td th:text="${projeto.descricao}"></td>
+					<td th:text="${projeto.dataInicio}"></td>
+					<td>
+						<button type="button" class="btn btn-danger"
+							th:onclick="'confirmarDelecaoProjeto(' + ${projeto.idProjeto} + ')'">
+							Deletar
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

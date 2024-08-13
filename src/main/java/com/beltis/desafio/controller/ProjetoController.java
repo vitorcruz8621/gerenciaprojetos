@@ -1,74 +1,54 @@
 package com.beltis.desafio.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.beltis.desafio.model.ProjetoModel;
 import com.beltis.desafio.service.intf.ProjetoService;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@RestController
-@RequestMapping("/api/projetos")
+@Controller
+@RequestMapping("/web/projetos")
 @Validated
 public class ProjetoController {
 	@Autowired
 	private ProjetoService projetoService;
 
 	@GetMapping
-	public ResponseEntity<List<ProjetoModel>> getAllProjetos() throws EntityNotFoundException, Exception {
-
+	public String listarProjetos(Model model) throws EntityNotFoundException, Exception {
 		List<ProjetoModel> projetos = projetoService.findAll();
 
-		if (!projetos.isEmpty()) {
-			return ResponseEntity.ok(projetos);
+		if (projetos.isEmpty()) {
+			model.addAttribute("mensagem", "Nenhum projeto encontrado.");
 		}
 
-		// TODO: criar uma exceção para caso de registro não encontrado.
-		return ResponseEntity.notFound().build();
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<ProjetoModel> getProjetoById(@PathVariable Integer id) {
-		Optional<ProjetoModel> opProjeto = projetoService.findById(id);
-
-		if (opProjeto.isPresent()) {
-			return ResponseEntity.ok(opProjeto.get());
-		}
-
-		// TODO: criar uma exceção para caso de registro não encontrado.
-		return ResponseEntity.notFound().build();
-	}
-
-	@PostMapping
-	public ResponseEntity<ProjetoModel> createProjeto(@RequestBody ProjetoModel projeto) {
-		projetoService.save(projeto);
-		return ResponseEntity.ok(projeto);
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<ProjetoModel> updateProjeto(@PathVariable Integer id, @RequestBody ProjetoModel projeto) {
-		projeto.setIdProjeto(id);
-		projetoService.update(projeto);
-		return ResponseEntity.ok(projeto);
+		model.addAttribute("projetos", projetos);
+		model.addAttribute("projeto", new ProjetoModel());
+		return "projetos/listar-projetos"; // Nome do arquivo template sem a extensão .html
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteProjeto(@PathVariable Integer id) {
 		projetoService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	// Novo método para salvar um novo projeto
+	@PostMapping
+	public String salvarProjeto(@ModelAttribute ProjetoModel projeto) {
+		projetoService.save(projeto);
+		return "redirect:/web/projetos"; // Redireciona para a página de listagem de projetos
 	}
 }
