@@ -89,7 +89,7 @@ O projeto utiliza as seguintes dependências, definidas no arquivo `pom.xml`:
   - **Artefato**: `spring-boot-starter-thymeleaf`
   - **Descrição**: Suporte específico do Flyway para migrações em bancos de dados PostgreSQL.
 
-## Endpoints para `ProjetoModel`
+## Endpoints para `Projeto`
 
 ### 1. Listar Todos os Projetos
 
@@ -139,7 +139,7 @@ O projeto utiliza as seguintes dependências, definidas no arquivo `pom.xml`:
 - **URI**: `http://localhost:8081/api/projetos/{id}`
 - **Descrição**: Deleta um projeto pelo seu ID.
 
-## Endpoints para `TarefaModel`
+## Endpoints para `Tarefa`
 
 ### 1. Listar Todas as Tarefas
 
