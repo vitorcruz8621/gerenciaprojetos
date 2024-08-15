@@ -41,7 +41,7 @@ public class ProjetoApiController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ProjetoModel> getProjetoById(@PathVariable Integer id) {
+	public ResponseEntity<ProjetoModel> getProjetoById(@PathVariable Integer id) throws EntityNotFoundException {
 		Optional<ProjetoModel> opProjeto = projetoService.findById(id);
 
 		if (opProjeto.isPresent()) {
@@ -49,7 +49,7 @@ public class ProjetoApiController {
 		}
 
 		// TODO: criar uma exceção para caso de registro não encontrado.
-		return ResponseEntity.notFound().build();
+		throw new EntityNotFoundException("O projeto não existe na tabela PROJETOS");
 	}
 
 	@PostMapping
@@ -58,9 +58,11 @@ public class ProjetoApiController {
 		return ResponseEntity.ok(projeto);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<ProjetoModel> updateProjeto(@PathVariable Integer id, @RequestBody ProjetoModel projeto) {
-		projeto.setIdProjeto(id);
+	@PutMapping("/{idProjeto}")
+	public ResponseEntity<ProjetoModel> updateProjeto(
+			@PathVariable(name = "idProjeto", required = true) Integer idProjeto, 
+			@RequestBody(required = true) ProjetoModel projeto) {
+		projeto.setIdProjeto(idProjeto);
 		projetoService.update(projeto);
 		return ResponseEntity.ok(projeto);
 	}

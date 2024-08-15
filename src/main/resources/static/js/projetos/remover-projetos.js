@@ -1,7 +1,18 @@
 function confirmarDelecaoProjeto(id) {
+	const dataStringfy = {
+		"idProjeto": 7,
+		"titulo": "Novo Projeto",
+		"descricao": "Novo Projeto",
+		"dataInicio": "2024-08-31"
+	};
+	
 	if (confirm("Tem certeza que deseja deletar este projeto?")) {
 		fetch(`/web/projetos/${id}`, {
 			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: dataStringfy
 		})
 			.then(response => {
 				if (response.ok) {

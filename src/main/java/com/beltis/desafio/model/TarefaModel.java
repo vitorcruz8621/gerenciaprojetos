@@ -26,7 +26,7 @@ public class TarefaModel {
     @Column(length = 500, nullable = false)
     private String descricao;
 
-    @NotEmpty(message = "A prioridade deve ser definida.")
+    @NotNull(message = "A prioridade deve ser definida.")
     @Enumerated(EnumType.STRING)
     private Prioridade prioridade;
 

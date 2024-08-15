@@ -5,55 +5,20 @@
 	<meta charset="UTF-8" />
 	<title>Listar Projetos</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+	<script src="/js/projetos/alterar-projetos.js" defer></script>
 	<script src="/js/projetos/remover-projetos.js" defer></script>
-	<script src="/js/projetos/validar-cadastro-projetos.js" defer></script>
+	<script src="/js/projetos/toggle-formularios-projetos/toggle-formularios-projetos.js" defer></script>
+	<script src="/js/projetos/validacoes/validar-cadastro-projetos.js" defer></script>
+	<script src="/js/projetos/validacoes/validar-alteracao-projetos.js" defer></script>
+	
 	<script type="text/javascript">
-		function toggleFormularioCadastro() {
-			const formularioCadastro = document.getElementById("formulario-cadastro");
-			const tabelaListagemProjetos = document.getElementById("tabela-listagem-projetos");
-			const botaoCadastrarProjeto = document.getElementById("div-cadastrar-projeto");
-			const tituloListaProjetos = document.getElementById("titulo-lista-projetos");
-			
-			if (formularioCadastro.classList.contains("d-none")) {
-				formularioCadastro.classList.remove("d-none");
-				tabelaListagemProjetos.classList.add("d-none");
-				botaoCadastrarProjeto.classList.add("d-none");
-				tituloListaProjetos.classList.add("d-none");
-				
-			} else {
-				formularioCadastro.classList.add("d-none");
-				tabelaListagemProjetos.classList.remove("d-none");
-				botaoCadastrarProjeto.classList.remove("d-none");
-				tituloListaProjetos.classList.remove("d-none");
-			}
+		function handleSubmit(event) {
+		    event.preventDefault();
+		    if (validarFormularioAlteracao()) {
+		        alterarProjeto(event);
+		    }
+		    return false;
 		}
-
-		function toggleFormularioAlteracao(botaoAlterar = null) {
-			const formularioAlteracao = document.getElementById("formulario-alteracao");
-			const tabelaProjetos = document.getElementById("tabela-listagem-projetos");
-			const botaoCadastrarProjeto = document.getElementById("div-cadastrar-projeto");
-			const tituloListaProjetos = document.getElementById("titulo-lista-projetos");
-			
-			if (botaoAlterar === null) {
-				console.log("botão nulo");
-				formularioAlteracao.classList.add("d-none");
-				tabelaProjetos.classList.remove("d-none");
-				botaoCadastrarProjeto.classList.remove("d-none");
-				tituloListaProjetos.classList.remove("d-none");
-			} else {
-				formularioAlteracao.classList.remove("d-none");
-				tabelaProjetos.classList.add("d-none");
-				botaoCadastrarProjeto.classList.add("d-none");
-				tituloListaProjetos.classList.add("d-none");
-			    
-				document.getElementById("alteracao-id").value = button.getAttribute('data-id');;
-				document.getElementById("alteracao-titulo").value = button.getAttribute('data-titulo');
-				document.getElementById("alteracao-descricao").value = button.getAttribute('data-descricao');
-				document.getElementById("alteracao-dataInicio").value = button.getAttribute('data-dataInicio');
-			}
-		}
-
-
 	</script>
 </head>
 
@@ -75,21 +40,21 @@
 		<div id="formulario-cadastro" class="d-none">
 			<h2>Cadastrar Novo Projeto</h2>
 			<form id="form-cadastro-projeto" th:action="@{/web/projetos}" method="post"
-				onsubmit="return validarFormularioCadastro()">
+				onsubmit="return validarFormularioCadastro();">
 				<div class="form-group">
 					<label for="titulo">Título:</label>
 					<input type="text" id="cadastro-titulo" name="titulo" class="form-control" />
-					<div id="cadastro-titulo-error" class="text-danger d-none"></div>
+					<div id="cadastro-titulo-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<div class="form-group">
 					<label for="descricao">Descrição:</label>
 					<input type="text" id="cadastro-descricao" name="descricao" class="form-control" />
-					<div id="cadastro-descricao-error" class="text-danger d-none"></div>
+					<div id="cadastro-descricao-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<div class="form-group">
 					<label for="dataInicio">Data de Início:</label>
 					<input type="date" id="cadastro-dataInicio" name="dataInicio" class="form-control" />
-					<div id="cadastro-dataInicio-error" class="text-danger d-none"></div>
+					<div id="cadastro-dataInicio-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<button type="submit" class="btn btn-primary">Salvar</button>
 				<button type="button" class="btn btn-secondary" onclick="toggleFormularioCadastro()">
@@ -101,30 +66,30 @@
 		<!-- FORMULARIO_ALTERACAO -->
 		<div id="formulario-alteracao" class="d-none">
 			<h2>Alterar Projeto</h2>
-			<form id="form-alteracao-projeto" th:action="@{/web/projetos}" method="post"
-				onsubmit="return validarFormularioAlteracao()">
+			<form id="form-alteracao-projeto" 
+				onsubmit="return handleSubmit(event);">
 				<input type="hidden" id="alteracao-id" name="id" />
 				<div class="form-group">
 					<label for="titulo">Título:</label>
 					<input type="text" id="alteracao-titulo" name="titulo" class="form-control" />
-					<div id="alteracao-titulo-error" class="text-danger d-none"></div>
+					<div id="alteracao-titulo-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<div class="form-group">
 					<label for="descricao">Descrição:</label>
 					<input type="text" id="alteracao-descricao" name="descricao" class="form-control" />
-					<div id="alteracao-descricao-error" class="text-danger d-none"></div>
+					<div id="alteracao-descricao-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<div class="form-group">
 					<label for="dataInicio">Data de Início:</label>
 					<input type="date" id="alteracao-dataInicio" name="dataInicio" class="form-control" />
-					<div id="alteracao-dataInicio-error" class="text-danger d-none"></div>
+					<div id="alteracao-dataInicio-error" class="text-danger d-none" role="alert"></div>
 				</div>
 				<button type="submit" class="btn btn-primary" >Salvar Alterações</button>
 				<button type="button" class="btn btn-secondary" th:onclick="toggleFormularioAlteracao()">Cancelar</button>
 			</form>
 		</div>
 
-
+		<!-- LISTAGEM PROJETOS -->
 		<table id="tabela-listagem-projetos" class="table table-striped mt-4">
 			<thead>
 				<tr>

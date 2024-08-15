@@ -25,48 +25,49 @@ import jakarta.persistence.EntityNotFoundException;
 @Validated
 public class TarefaApiController {
 	@Autowired
-    private TarefaService tarefaService;
-	
+	private TarefaService tarefaService;
+
 	@GetMapping
-    public ResponseEntity<List<TarefaModel>> getAllTarefas() throws EntityNotFoundException, Exception {
-        List<TarefaModel> listaTarefas = tarefaService.findAll();
-        
+	public ResponseEntity<List<TarefaModel>> getAllTarefas() throws EntityNotFoundException, Exception {
+		List<TarefaModel> listaTarefas = tarefaService.findAll();
+
 		if (!listaTarefas.isEmpty()) {
 			return ResponseEntity.ok(listaTarefas);
 		}
 
 		// TODO: criar uma exceção para caso de registro não encontrado.
 		return ResponseEntity.notFound().build();
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<TarefaModel> getTarefaById(@PathVariable Integer id) {
-        Optional<TarefaModel> opTarefa = tarefaService.findById(id);
-        
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<TarefaModel> getTarefaById(@PathVariable Integer id) {
+		Optional<TarefaModel> opTarefa = tarefaService.findById(id);
+
 		if (opTarefa.isPresent()) {
 			return ResponseEntity.ok(opTarefa.get());
 		}
 
 		// TODO: criar uma exceção para caso de registro não encontrado.
 		return ResponseEntity.notFound().build();
-    }
+	}
 
-    @PostMapping
-    public ResponseEntity<TarefaModel> createTarefa(@RequestBody TarefaModel tarefa) {
-        tarefaService.save(tarefa);
-        return ResponseEntity.ok(tarefa);
-    }
+	@PostMapping
+	public ResponseEntity<TarefaModel> createTarefa(@RequestBody TarefaModel tarefa) {
+		tarefaService.save(tarefa);
+		return ResponseEntity.ok(tarefa);
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TarefaModel> updateTarefa(@PathVariable Integer id, @RequestBody TarefaModel tarefa) {
-        tarefa.setIdTarefa(id);
-        tarefaService.update(tarefa);
-        return ResponseEntity.ok(tarefa);
-    }
+	@PutMapping("/{idtarefa}")
+	public ResponseEntity<TarefaModel> updateTarefa(@PathVariable(name = "idtarefa", required = true) Integer idtarefa,
+			@RequestBody(required = true) TarefaModel tarefa) {
+		tarefa.setIdTarefa(idtarefa);
+		tarefaService.update(tarefa);
+		return ResponseEntity.ok(tarefa);
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTarefa(@PathVariable Integer id) {
-        tarefaService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteTarefa(@PathVariable Integer id) {
+		tarefaService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 }

@@ -51,17 +51,20 @@ public class TarefaDAOImpl implements TarefaDAO {
 
 	@Override
 	public void update(TarefaModel tarefa) {
-		try {
-			Session session = sessionFactory.openSession();
-	        Transaction transaction = session.beginTransaction();
-	        session.update(tarefa);
-	        transaction.commit();
-	        session.close();
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			throw e;
-		}
-		
+		Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        String hql = "UPDATE TarefaModel t SET t.titulo = :titulo, t.descricao = :descricao, t.prioridade = :prioridade, t.estimativaHoras = :estimativaHoras WHERE t.idTarefa = :idTarefa";
+        Query<?> query = session.createQuery(hql);
+        query.setParameter("idTarefa", tarefa.getIdTarefa());
+        query.setParameter("titulo", tarefa.getTitulo());
+        query.setParameter("descricao", tarefa.getDescricao());
+        query.setParameter("prioridade", tarefa.getPrioridade());
+        query.setParameter("estimativaHoras", tarefa.getEstimativaHoras());
+        
+        int result = query.executeUpdate();
+        transaction.commit();
+        session.close();
 	}
 
 	@Override

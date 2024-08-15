@@ -49,9 +49,17 @@ public class ProjetoDAOImpl implements ProjetoDAO {
 
     @Override
     public void update(ProjetoModel projeto) {
-        Session session = sessionFactory.openSession();
+    	Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        session.update(projeto);
+        
+        String hql = "UPDATE ProjetoModel p SET p.titulo = :titulo, p.descricao = :descricao, p.dataInicio = :dataInicio WHERE p.idProjeto = :idProjeto";
+        Query<?> query = session.createQuery(hql);
+        query.setParameter("idProjeto", projeto.getIdProjeto());
+        query.setParameter("titulo", projeto.getTitulo());
+        query.setParameter("descricao", projeto.getDescricao());
+        query.setParameter("dataInicio", projeto.getDataInicio());
+        
+        int result = query.executeUpdate();
         transaction.commit();
         session.close();
     }
